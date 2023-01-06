@@ -1,0 +1,62 @@
+{
+ "manifestVersion": 1,
+ "id": "adotaskname",
+ "name": "ADO TaskName",
+ "version": "1.0.0",
+ "publisher": "pattontech",
+ "targets": [
+  {
+   "id": "Microsoft.VisualStudio.Services"
+  }
+ ],
+ "galleryFlags": [
+  "Public"
+ ],
+ "description": "An Azure DevOps PowerShell Task to install a module",
+ "categories": [
+  "Azure Pipelines"
+ ],
+ "icons": {
+  "default": "icon.png"
+ },
+ "files": [
+  {
+   "path": "adoinstallmodule"
+  }
+ ],
+ "content": {
+  "details": {
+   "path": "Overview.md"
+  },
+  "license": {
+   "path": "LICENSE"
+  }
+ },
+ "links": {
+  "getstarted": {
+   "uri": "https://github.com/PoshAdoTasks/ado-taskname/issues"
+  },
+  "license": {
+   "uri": "https://github.com/PoshAdoTasks/ado-installmodule/blob/main/LICENSE"
+  },
+  "issues": {
+   "uri": "https://github.com/PoshAdoTasks/ado-installmodule/issues"
+  }
+ },
+ "repository": {
+  "type": "git",
+  "uri": "https://github.com/PoshAdoTasks/ado-taskname"
+ },
+ "contributions": [
+  {
+   "id": "adotaskname",
+   "type": "ms.vss-distributed-task.task",
+   "targets": [
+    "ms.vss-distributed-task.tasks"
+   ],
+   "properties": {
+    "name": "adotaskname"
+   }
+  }
+ ]
+}
