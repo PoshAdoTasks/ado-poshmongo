@@ -13,15 +13,9 @@
     }
   ],
   "description": "An Azure DevOps extension for working with MongoDB",
-  "icons": {
-    "default": "icon.png"
-  },
-  "galleryFlags": [
-    "Public"
-  ],
   "content": {
     "details": {
-      "path": "Overview.md"
+      "path": "overview.md"
     },
     "license": {
       "path": "LICENSE"
@@ -29,34 +23,36 @@
   },
   "links": {
     "getstarted": {
-      "uri": "https://github.com/PoshAdoTasks/ado-taskname/issues"
+      "uri": "https://github.com/PoshAdoTasks/ado-poshmongo/blob/main/README.md"
     },
     "license": {
-      "uri": "https://github.com/PoshAdoTasks/ado-installmodule/blob/main/LICENSE"
+      "uri": "https://github.com/PoshAdoTasks/ado-poshmongo/blob/main/LICENSE"
     },
-    "support": {}
+    "support": {
+      "uri": "https://github.com/PoshAdoTasks/ado-poshmongo/issues"
+    }
   },
   "repository": {
     "type": "Git",
-    "uri": "https://github.com/PoshAdoTasks/ado-taskname"
+    "uri": "https://github.com/PoshAdoTasks/ado-poshmongo"
   },
   "public": false,
   "files": [
     {
-      "path": "connectmongodb"
+      "path": "adoposhmongo"
     }
   ],
   "contributions": [
     {
-      "id": "adotaskname",
+      "id": "adoposhmongo",
       "type": "ms.vss-distributed-task.task",
       "description": "",
       "targets": [
-        "ms.vss-distributed-task.tasks"
+        "ms.vss-distributed-task.task"
       ],
       "restrictedTo": [],
       "properties": {
-        "name": "adotaskname"
+        "name": "adoposhmongo"
       }
     }
   ]

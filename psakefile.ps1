@@ -1,8 +1,11 @@
 $script:WorkingDir = $PSScriptRoot;
 $script:GithubRepo = 'ado-poshmongo'
 $script:TaskName = $script:GithubRepo.Replace('-', '')
+$script:FriendlyName = "ADO PoshMongo"
+$script:Version = "1.0.0"
 $script:Description = 'An Azure DevOps extension for working with MongoDB'
 $script:Author = 'Jeffrey S. Patton'
+$script:Publisher = "pattontech"
 $script:GithubUrl = "https://github.com/PoshAdoTasks/$($script:GithubRepo)"
 $script:MarketplaceUrl = "https://marketplace.visualstudio.com/items?itemName=pattontech.$($script:TaskName)"
 
@@ -22,6 +25,31 @@ Task UpdateVssExtension -Action {
  $vssExtension | ConvertTo-Json -Depth 10 | Out-File "$($script:WorkingDir)\vss-extension.json" -Force
 }
 
+Task NewExtensionManifest {
+    #
+    # Import poshadotask
+    #
+    $Manifest = New-Manifest -Id $script:TaskName -Version $script:Version -Name $script:FriendlyName -Publisher $script:Publisher -Description $script:Description;
+    $Manifest | Set-Category -AzurePipelines;
+    $Manifest | Add-File -Path $script:TaskName;
+    $Manifest.Content = New-Content -Details 'overview.md' -License 'LICENSE';
+    $Manifest.Links = New-Link -GetStarted "$($script:GithubUrl)/blob/main/README.md" -License "$($script:GithubUrl)/blob/main/LICENSE" -Support "$($script:GithubUrl)/issues";
+    $Manifest.Repository = New-Repository -Type Git -Url "$($script:GithubUrl)";
+    $Manifest | Add-Contribution -Id $script:TaskName -Type "ms.vss-distributed-task.task";
+    $Manifest | Out-Manifest | Out-File vss-extension.json -Force
+}
+
+Task NewTask {
+    #
+    # Import poshadotask
+    #
+    $Manifest = Get-Manifest (Get-Item .\vss-extension.json).FullName;
+    if (!(Test-Path .\task-version.json)){[System.Guid]::NewGuid() |Select-Object -Property Guid |ConvertTo-Json |Out-File task-version.json}
+    if (!(Test-Path $Manifest.Id)){New-Item -Name $Manifest.Id}
+    $Task = New-Task -Id (Get-Content .\task-version.json |ConvertFrom-Json).Guid -Name $script:TaskName -FriendlyName $script:FriendlyName -Description $script:Description -Author $script:Author -Version $script:Version;
+    $Task.HelpMarkdown = "If you have any issues, please create an issue ($($($script:GithubUrl))/issues)"
+    $Task.tostring()
+}
 Task SetupTfx {
  npm install -g tfx-cli
 }
