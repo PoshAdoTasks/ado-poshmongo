@@ -1,62 +1,63 @@
 {
- "manifestVersion": 1,
- "id": "adotaskname",
- "name": "ADO TaskName",
- "version": "1.0.0",
- "publisher": "pattontech",
- "targets": [
-  {
-   "id": "Microsoft.VisualStudio.Services"
-  }
- ],
- "galleryFlags": [
-  "Public"
- ],
- "description": "An Azure DevOps PowerShell Task to install a module",
- "categories": [
-  "Azure Pipelines"
- ],
- "icons": {
-  "default": "icon.png"
- },
- "files": [
-  {
-   "path": "adoinstallmodule"
-  }
- ],
- "content": {
-  "details": {
-   "path": "Overview.md"
+  "manifestVersion": 1,
+  "id": "adoposhmongo",
+  "version": "1.0.0",
+  "name": "ADO PoshMongo",
+  "publisher": "pattontech",
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "An Azure DevOps extension for working with MongoDB",
+  "icons": {
+    "default": "icon.png"
   },
-  "license": {
-   "path": "LICENSE"
-  }
- },
- "links": {
-  "getstarted": {
-   "uri": "https://github.com/PoshAdoTasks/ado-taskname/issues"
+  "galleryFlags": [
+    "Public"
+  ],
+  "content": {
+    "details": {
+      "path": "Overview.md"
+    },
+    "license": {
+      "path": "LICENSE"
+    }
   },
-  "license": {
-   "uri": "https://github.com/PoshAdoTasks/ado-installmodule/blob/main/LICENSE"
+  "links": {
+    "getstarted": {
+      "uri": "https://github.com/PoshAdoTasks/ado-taskname/issues"
+    },
+    "license": {
+      "uri": "https://github.com/PoshAdoTasks/ado-installmodule/blob/main/LICENSE"
+    },
+    "support": {}
   },
-  "issues": {
-   "uri": "https://github.com/PoshAdoTasks/ado-installmodule/issues"
-  }
- },
- "repository": {
-  "type": "git",
-  "uri": "https://github.com/PoshAdoTasks/ado-taskname"
- },
- "contributions": [
-  {
-   "id": "adotaskname",
-   "type": "ms.vss-distributed-task.task",
-   "targets": [
-    "ms.vss-distributed-task.tasks"
-   ],
-   "properties": {
-    "name": "adotaskname"
-   }
-  }
- ]
+  "repository": {
+    "type": "Git",
+    "uri": "https://github.com/PoshAdoTasks/ado-taskname"
+  },
+  "public": false,
+  "files": [
+    {
+      "path": "connectmongodb"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "adotaskname",
+      "type": "ms.vss-distributed-task.task",
+      "description": "",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "restrictedTo": [],
+      "properties": {
+        "name": "adotaskname"
+      }
+    }
+  ]
 }

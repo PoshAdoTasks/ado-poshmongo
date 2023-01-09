@@ -1,7 +1,7 @@
 $script:WorkingDir = $PSScriptRoot;
-$script:GithubRepo = 'ado-taskname'
+$script:GithubRepo = 'ado-poshmongo'
 $script:TaskName = $script:GithubRepo.Replace('-', '')
-$script:Description = 'An Azure DevOps PowerShell Task'
+$script:Description = 'An Azure DevOps extension for working with MongoDB'
 $script:Author = 'Jeffrey S. Patton'
 $script:GithubUrl = "https://github.com/PoshAdoTasks/$($script:GithubRepo)"
 $script:MarketplaceUrl = "https://marketplace.visualstudio.com/items?itemName=pattontech.$($script:TaskName)"
