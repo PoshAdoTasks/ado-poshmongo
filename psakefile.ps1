@@ -36,6 +36,7 @@ Task CreateProject {
    $Manifest | Set-Category -AzurePipelines;
   }
  }
+ $Manifest.Icons = New-Icon -Path "icon.png"
  #
  # Define details (overview.md and LICENSE required for public)
  #
@@ -100,14 +101,21 @@ Task CreateProject {
 }
 
 Task AddVstsTaskSdk {
- $Meta = Get-Content "$($script:WorkingDir)\metadata.json" | ConvertFrom-Json;
- $TaskFolder = Get-Item "$($Meta.Project.ExtensionName)"
- Save-Module –Name VstsTaskSdk –Path "$($TaskFolder.FullName)\ps_modules" –Force;
- Set-Location "$($TaskFolder.FullName)\ps_modules\VstsTaskSdk";
- $VstsTaskSdkDirectory = (Get-Item .).FullName;
- $VersionDirectory = (Get-Item .).GetDirectories().FullName;
- Move-Item "$($VersionDirectory)\*" $VstsTaskSdkDirectory -Verbose
- Remove-Item $VersionDirectory -Recurse -Force;
+ Set-Location -Path $script:WorkingDir;
+ $Manifest = Get-Manifest -Path "$($script:WorkingDir)\vss-extension.json";
+ foreach ($File in $Manifest.Files) {
+  $TaskFolder = Get-Item $File.Path;
+  $Task = Get-Task -Path "$($TaskFolder.FullName)\task.json";
+  if ($tTaskask.Execution.PowerShell -or $Task.Execution.PowerShell3) {
+   Save-Module –Name VstsTaskSdk –Path "$($TaskFolder.FullName)\ps_modules" –Force;
+   Set-Location "$($TaskFolder.FullName)\ps_modules\VstsTaskSdk";
+   $VstsTaskSdkDirectory = (Get-Item .).FullName;
+   $VersionDirectory = (Get-Item .).GetDirectories().FullName;
+   Move-Item "$($VersionDirectory)\*" $VstsTaskSdkDirectory -Verbose
+   Remove-Item $VersionDirectory -Recurse -Force;
+   Set-Location -Path $script:WorkingDir;
+  }
+ }
 }
 
 Task TogglePublic {
