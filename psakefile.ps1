@@ -1,13 +1,15 @@
 $script:WorkingDir = $PSScriptRoot;
 $script:MarketplaceUrl = "https://marketplace.visualstudio.com/items?itemName"
 
-if (Get-Module -ListAvailable |Where-Object -Property Name -eq 'PoshAdoTask')
-{
- Import-Module PoshAdoTask -Force;
- } else {
+if (Get-Module -ListAvailable | Where-Object -Property Name -eq 'PoshAdoTask') {
+ if (!(Get-Module PoshAdoTask)) {
+  Import-Module PoshAdoTask -Force;
+ }
+}
+else {
  Install-Module PoshAdoTask -Scope CurrentUser -AllowClobber -Force
  Import-Module PoshAdoTask -Force;
- }
+}
 
 Task SetupProject -depends Clean, CreateProject, AddVstsTaskSdk, SetupTfx
 
@@ -49,10 +51,6 @@ Task CreateProject {
  #
  $Manifest.Links = New-Link -GetStarted "$($Meta.Project.GithubUrl)/blob/main/README.md" -License "$($Meta.Project.GithubUrl)/blob/main/LICENSE" -Support "$($Meta.Project.GithubUrl)/issues";
  #
- # This is the option for Extension Tasks
- #
- $Manifest | Add-Contribution -Id $Meta.Manifest.Id -Type "ms.vss-distributed-task.task";
- #
  # Create extension file
  #
  $Manifest | Out-Manifest | Out-File -FilePath "$($script:WorkingDir)\vss-extension.json" -Force
@@ -62,7 +60,8 @@ Task CreateProject {
   #
   if (Test-Path -Path "$($ProjectDir.FullName)\$($t.Name)") {
    $TaskFolder = Get-Item -Path "$($ProjectDir.FullName)\$($t.Name)";
-  } else {
+  }
+  else {
    $TaskFolder = New-Item -Path "$($ProjectDir.FullName)\$($t.Name)" -ItemType Directory;
   }
   #
@@ -78,10 +77,17 @@ Task CreateProject {
   $Task | Set-Visibility -Build -Release;
   New-Item -Path "$($TaskFolder.FullName)\$($t.Name).ps1" -Force;
   #
-  # Update Manifest with files
+  # Update Manifest with Tasks
   #
   $Manifest = Get-Manifest -Path "$($script:WorkingDir)\vss-extension.json";
+  #
+  # Add Files for Tasks
+  #
   $Manifest | Add-File -Path "$($ProjectDir.BaseName)/$($TaskFolder.BaseName)";
+  #
+  # Add Task Contributions
+  #
+  $Manifest | Add-Contribution -Id "$($Meta.Manifest.Id)-$($t.Name)" -Type "ms.vss-distributed-task.task" -Name "$($Meta.Project.ExtensionName)/$($t.Name.ToLower())";
   $Manifest | Out-Manifest | Out-File -FilePath "$($script:WorkingDir)\vss-extension.json" -Force;
   foreach ($i in $t.Inputs) {
    #
@@ -104,6 +110,19 @@ Task AddVstsTaskSdk {
  Remove-Item $VersionDirectory -Recurse -Force;
 }
 
+Task TogglePublic {
+ $Manifest = Get-Manifest -Path "$($script:WorkingDir)\vss-extension.json";
+ if ($Manifest.Public -eq $true) {
+  $Manifest.Public = $false;
+  Write-Output "Extension is now Private"
+ }
+ else {
+  $Manifest.Public = $true;
+  Write-Output "Extension is now Public"
+ }
+ $Manifest | Out-Manifest | Out-File -FilePath "$($script:WorkingDir)\vss-extension.json" -Force
+}
+
 Task clean {
  Remove-Item "$($script:WorkingDir)\Output" -Recurse -ErrorAction Ignore;
  New-Item -Name "Output" -ItemType Directory -Force;
@@ -121,7 +140,7 @@ Task PublishExtension {
  $Manifest = Get-Manifest -Path "$($script:WorkingDir)\vss-extension.json";
  $Token = Get-Content "$($script:WorkingDir)\ado.token" | ConvertFrom-Json;
  $OutputFolder = Get-Item -Path "$($script:WorkingDir)\Output";
- $VisxFile = Get-ChildItem -Path $OutputFolder |Where-Object -Property BaseName -Contains $Manifest.Version;
+ $VisxFile = Get-ChildItem -Path $OutputFolder | Where-Object -Property BaseName -Contains $Manifest.Version;
  tfx extension publish --vsix $VisxFile.FullName --token $Token.PAT --json --no-prompt
 }
 
