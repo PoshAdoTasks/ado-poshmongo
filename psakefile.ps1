@@ -131,6 +131,21 @@ Task TogglePublic {
  $Manifest | Out-Manifest | Out-File -FilePath "$($script:WorkingDir)\vss-extension.json" -Force
 }
 
+Task IncrementVersion {
+ $Manifest = Get-Manifest -Path "$($script:WorkingDir)\vss-extension.json";
+ $Version = [System.Version]::new($Manifest.Version) |ForEach-Object {New-Object -TypeName psobject -Property @{Major=$_.Major;Minor=$_.Minor;Build=$_.Build}} |Select-Object -Property Major, Minor, Build
+ $Version.Minor += 1;
+ $NewVersion = ([System.Version]::New("$($Version.Major).$($Version.Minor).$($Version.Build)"));
+ $Manifest | New-Version -Version $NewVersion;
+ foreach ($File in $Manifest.Files) {
+  $TaskFolder = Get-Item $File.Path;
+  $Task = Get-Task -Path "$($TaskFolder.FullName)\task.json";
+  $Task | New-Version -Version $NewVersion;
+  $Task | Out-Task | Out-File "$($TaskFolder.FullName)\task.json" -Force;
+ }
+ $Manifest | Out-Manifest | Out-File -FilePath "$($script:WorkingDir)\vss-extension.json" -Force;
+}
+
 Task clean {
  Remove-Item "$($script:WorkingDir)\Output" -Recurse -ErrorAction Ignore;
  New-Item -Name "Output" -ItemType Directory -Force;
@@ -140,7 +155,7 @@ Task SetupTfx {
  npm install -g tfx-cli
 }
 
-Task CreatePackage -depends Clean {
+Task CreatePackage -depends Clean, IncrementVersion {
  tfx extension create --manifest-globs "$($script:WorkingDir)\vss-extension.json" --output-path "$($script:WorkingDir)\Output" --no-prompt
 }
 
