@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "pattontech-ado-poshmongo",
-  "version": "1.0.0",
+  "version": "1.3.0",
   "name": "ADO PoshMongo",
   "publisher": "pattontech",
   "categories": [
@@ -36,7 +36,7 @@
     "type": "git",
     "uri": "https://github.com/PoshAdoTasks/ado-poshmongo"
   },
-  "public": false,
+  "public": true,
   "files": [
     {
       "path": "adoposhmongo/ConnectMongoDb"
@@ -53,15 +53,39 @@
   ],
   "contributions": [
     {
-      "id": "pattontech-ado-poshmongo",
+      "id": "pattontech-ado-poshmongo-connectmongodb",
       "type": "ms.vss-distributed-task.task",
       "description": "",
       "targets": [
-        "ms.vss-distributed-task.task"
+        "ms.vss-distributed-task.tasks"
       ],
       "restrictedTo": [],
       "properties": {
-        "name": "pattontech-ado-poshmongo"
+        "name": "adoposhmongo/ConnectMongoDb"
+      }
+    },
+    {
+      "id": "pattontech-ado-poshmongo-getmongodbdocument",
+      "type": "ms.vss-distributed-task.task",
+      "description": "",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "restrictedTo": [],
+      "properties": {
+        "name": "adoposhmongo/GetMongoDBDocument"
+      }
+    },
+    {
+      "id": "pattontech-ado-poshmongo-addmongodbdocument",
+      "type": "ms.vss-distributed-task.task",
+      "description": "",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "restrictedTo": [],
+      "properties": {
+        "name": "adoposhmongo/AddMongoDBDocument"
       }
     }
   ]
