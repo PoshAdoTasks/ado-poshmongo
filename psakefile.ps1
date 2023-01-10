@@ -1,9 +1,9 @@
 $script:WorkingDir = $PSScriptRoot;
 $script:GithubRepo = 'ado-poshmongo'
-$script:TaskName = $script:GithubRepo.Replace('-', '')
 $script:FriendlyName = "ADO PoshMongo"
-$script:Version = "1.0.0"
 $script:Description = 'An Azure DevOps extension for working with MongoDB'
+$script:Version = "1.0.0"
+$script:TaskName = $script:GithubRepo.Replace('-', '')
 $script:Author = 'Jeffrey S. Patton'
 $script:Publisher = "pattontech"
 $script:GithubUrl = "https://github.com/PoshAdoTasks/$($script:GithubRepo)"
@@ -26,29 +26,42 @@ Task UpdateVssExtension -Action {
 }
 
 Task NewExtensionManifest {
-    #
-    # Import poshadotask
-    #
-    $Manifest = New-Manifest -Id $script:TaskName -Version $script:Version -Name $script:FriendlyName -Publisher $script:Publisher -Description $script:Description;
-    $Manifest | Set-Category -AzurePipelines;
-    $Manifest | Add-File -Path $script:TaskName;
-    $Manifest.Content = New-Content -Details 'overview.md' -License 'LICENSE';
-    $Manifest.Links = New-Link -GetStarted "$($script:GithubUrl)/blob/main/README.md" -License "$($script:GithubUrl)/blob/main/LICENSE" -Support "$($script:GithubUrl)/issues";
-    $Manifest.Repository = New-Repository -Type Git -Url "$($script:GithubUrl)";
-    $Manifest | Add-Contribution -Id $script:TaskName -Type "ms.vss-distributed-task.task";
-    $Manifest | Out-Manifest | Out-File vss-extension.json -Force
+ #
+ # Import poshadotask
+ #
+ $Manifest = New-Manifest -Id $script:TaskName -Version $script:Version -Name $script:FriendlyName -Publisher $script:Publisher -Description $script:Description;
+ $Manifest | Set-Category -AzurePipelines;
+ $Manifest | Add-File -Path $script:TaskName;
+ $Manifest.Content = New-Content -Details 'overview.md' -License 'LICENSE';
+ $Manifest.Links = New-Link -GetStarted "$($script:GithubUrl)/blob/main/README.md" -License "$($script:GithubUrl)/blob/main/LICENSE" -Support "$($script:GithubUrl)/issues";
+ $Manifest.Repository = New-Repository -Type Git -Url "$($script:GithubUrl)";
+ $Manifest | Add-Contribution -Id $script:TaskName -Type "ms.vss-distributed-task.task";
+ $Manifest | Out-Manifest | Out-File vss-extension.json -Force
 }
 
 Task NewTask {
-    #
-    # Import poshadotask
-    #
-    $Manifest = Get-Manifest (Get-Item .\vss-extension.json).FullName;
-    if (!(Test-Path .\task-version.json)){[System.Guid]::NewGuid() |Select-Object -Property Guid |ConvertTo-Json |Out-File task-version.json}
-    if (!(Test-Path $Manifest.Id)){New-Item -Name $Manifest.Id}
-    $Task = New-Task -Id (Get-Content .\task-version.json |ConvertFrom-Json).Guid -Name $script:TaskName -FriendlyName $script:FriendlyName -Description $script:Description -Author $script:Author -Version $script:Version;
-    $Task.HelpMarkdown = "If you have any issues, please create an issue ($($($script:GithubUrl))/issues)"
-    $Task.tostring()
+ #
+ # Import poshadotask
+ #
+ $Manifest = Get-Manifest (Get-Item .\vss-extension.json).FullName;
+ if (!(Test-Path .\task-version.json)) { [System.Guid]::NewGuid() | Select-Object -Property Guid | ConvertTo-Json | Out-File task-version.json }
+ if (!(Test-Path $Manifest.Id)) { New-Item -Name $Manifest.Id -ItemType Directory }
+ $Task = New-Task -Id (Get-Content .\task-version.json | ConvertFrom-Json).Guid -Name $script:TaskName -FriendlyName $script:FriendlyName -Description $script:Description -Author $script:Author -Version $script:Version;
+ $Task.HelpMarkdown = "If you have any issues, please create an issue ($($($script:GithubUrl))/issues)";
+ $Task.MinimumAgentVersion = '1.95.0';
+ $Task | Set-Category -Utility;
+ $Task | New-Execution -Execution 'PowerShell3' -Target "$($script:TaskName).ps1";
+ $Task | Set-Visibility -Build -Release;
+ $Task | Out-Task | Out-File ".\$($script:TaskName)\task.json" -Force
+}
+
+Task UpdateTask {
+ #
+ # Import poshadotask
+ #
+ $Task = Get-Task (Get-Item ".\$($script:TaskName)\task.json")
+ $Task | Add-Input -Name "Name" -Type string -Label "Name Value" -Required -HelpMarkDown "Prove a name for this item"
+ $Task | Out-Task | Out-File ".\$($script:TaskName)\task.json" -Force
 }
 Task SetupTfx {
  npm install -g tfx-cli
