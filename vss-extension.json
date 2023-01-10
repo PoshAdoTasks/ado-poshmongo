@@ -39,16 +39,16 @@
   "public": false,
   "files": [
     {
-      "path": "adoposhmongo\\ConnectMongoDb"
+      "path": "adoposhmongo/ConnectMongoDb"
     },
     {
-      "path": "adoposhmongo\\GetMongoDBDocument"
+      "path": "adoposhmongo/GetMongoDBDocument"
     },
     {
-      "path": "adoposhmongo\\AddMongoDBDocument"
+      "path": "adoposhmongo/AddMongoDBDocument"
     },
     {
-      "path": "adoposhmongo\\ps_modules"
+      "path": "adoposhmongo/ps_modules"
     }
   ],
   "contributions": [

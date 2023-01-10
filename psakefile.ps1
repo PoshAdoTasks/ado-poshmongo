@@ -81,7 +81,7 @@ Task CreateProject {
   # Update Manifest with files
   #
   $Manifest = Get-Manifest -Path "$($script:WorkingDir)\vss-extension.json";
-  $Manifest | Add-File -Path "$($ProjectDir.BaseName)\$($TaskFolder.BaseName)";
+  $Manifest | Add-File -Path "$($ProjectDir.BaseName)/$($TaskFolder.BaseName)";
   $Manifest | Out-Manifest | Out-File -FilePath "$($script:WorkingDir)\vss-extension.json" -Force;
   foreach ($i in $t.Inputs) {
    #
