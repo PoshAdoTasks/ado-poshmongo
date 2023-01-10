@@ -1,0 +1,107 @@
+{
+ "Project": {
+  "GithubRepo": "ado-poshmongo",
+  "GithubUrl": "https://github.com/PoshAdoTasks/ado-poshmongo",
+  "ExtensionName": "adoposhmongo"
+ },
+ "Manifest": {
+  "Id": "pattontech-ado-poshmongo",
+  "Version": "1.0.0",
+  "Publisher": "pattontech",
+  "Name": "ADO PoshMongo",
+  "Description": "An Azure DevOps extension for working with MongoDB",
+  "Category": "AzurePipelines",
+  "ManifestVersion": 1,
+  "Tasks": [
+   {
+    "Id": "",
+    "Name": "ConnectMongoDb",
+    "FriendlyName": "Connect MongoDB",
+    "Description": "Connect to MongoDB Instance",
+    "Author": "Jeffrey S. Patton",
+    "HelpMarkDown": "If you have any issues, please create an issue (https://github.com/PoshAdoTasks/ado-poshmongo/issues)",
+    "Version": "1.0.0",
+    "Inputs": [
+     {
+      "Name": "ConnectionString",
+      "Type": "String",
+      "Label": "Connection String",
+      "Required": true,
+      "HelpMarkDown": "The connection string that is used to connect Mongo DB"
+     },
+     {
+      "Name": "ForceTls12",
+      "Type": "Boolean",
+      "Label": "Force TLS12",
+      "Required": false,
+      "HelpMarkDown": "Use this flag if MongoDB is hosted behind an Azure CosmosDB"
+     }
+    ]
+   },
+   {
+    "Id": "",
+    "Name": "GetMongoDBDocument",
+    "FriendlyName": "Get MongoDB Document",
+    "Description": "Get a Document from MongoDB",
+    "Author": "Jeffrey S. Patton",
+    "HelpMarkDown": "If you have any issues, please create an issue (https://github.com/PoshAdoTasks/ado-poshmongo/issues)",
+    "Version": "1.0.0",
+    "Inputs": [
+     {
+      "Name": "DatabaseName",
+      "Type": "String",
+      "Label": "Database Name",
+      "Required": true,
+      "HelpMarkDown": "The name of the MongoDB Database"
+     },
+     {
+      "Name": "CollectionName",
+      "Type": "String",
+      "Label": "Collection Name",
+      "Required": true,
+      "HelpMarkDown": "The name of the MongoDB Collection"
+     },
+     {
+      "Name": "DocumentId",
+      "Type": "String",
+      "Label": "Document Id",
+      "Required": true,
+      "HelpMarkDown": "The Id of the document in the collection"
+     }
+    ]
+   },
+   {
+    "Id": "",
+    "Name": "AddMongoDBDocument",
+    "FriendlyName": "Add MongoDB Document",
+    "Description": "Add a Document to MongoDB",
+    "Author": "Jeffrey S. Patton",
+    "HelpMarkDown": "If you have any issues, please create an issue (https://github.com/PoshAdoTasks/ado-poshmongo/issues)",
+    "Version": "1.0.0",
+    "Inputs": [
+     {
+      "Name": "DatabaseName",
+      "Type": "String",
+      "Label": "Database Name",
+      "Required": true,
+      "HelpMarkDown": "The name of the MongoDB Database"
+     },
+     {
+      "Name": "CollectionName",
+      "Type": "String",
+      "Label": "Collection Name",
+      "Required": true,
+      "HelpMarkDown": "The name of the MongoDB Collection"
+     },
+     {
+      "Name": "Document",
+      "Type": "String",
+      "Label": "JSON Document",
+      "Required": true,
+      "HelpMarkDown": "A JSON string of the Document"
+     }
+    ]
+   }
+  ]
+ }
+}

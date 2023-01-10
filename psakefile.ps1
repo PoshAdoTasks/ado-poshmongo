@@ -1,100 +1,141 @@
 $script:WorkingDir = $PSScriptRoot;
-$script:GithubRepo = 'ado-poshmongo'
-$script:FriendlyName = "ADO PoshMongo"
-$script:Description = 'An Azure DevOps extension for working with MongoDB'
-$script:Version = "1.0.0"
-$script:TaskName = $script:GithubRepo.Replace('-', '')
-$script:Author = 'Jeffrey S. Patton'
-$script:Publisher = "pattontech"
-$script:GithubUrl = "https://github.com/PoshAdoTasks/$($script:GithubRepo)"
-$script:MarketplaceUrl = "https://marketplace.visualstudio.com/items?itemName=pattontech.$($script:TaskName)"
+$script:MarketplaceUrl = "https://marketplace.visualstudio.com/items?itemName"
 
-Task CreateAdoTask -depends Clean, SetupTfx, AddVstsTaskSdk, UpdateVssExtension
+if (Get-Module -ListAvailable |Where-Object -Property Name -eq 'PoshAdoTask')
+{
+ Import-Module PoshAdoTask -Force;
+ } else {
+ Install-Module PoshAdoTask -Scope CurrentUser -AllowClobber -Force
+ Import-Module PoshAdoTask -Force;
+ }
+
+Task SetupProject -depends Clean, CreateProject, AddVstsTaskSdk, SetupTfx
+
+Task CreateProject {
+ #
+ # Read in metadata
+ #
+ $Meta = Get-Content "$($script:WorkingDir)\metadata.json" | ConvertFrom-Json;
+ #
+ # Create Project Folder
+ #
+ if (Test-Path $Meta.Project.ExtensionName) {
+  $ProjectDir = Get-Item -Path $Meta.Project.ExtensionName;
+ }
+ else {
+  $ProjectDir = New-Item -Name $Meta.Project.ExtensionName -ItemType Directory;
+ }
+ #
+ # Create Manifest
+ #
+ $Manifest = New-Manifest -Id $Meta.Manifest.Id -Version $Meta.Manifest.Version -Name $Meta.Manifest.Name -Publisher $Meta.Manifest.Publisher -Description $Meta.Manifest.Description -ManifestVersion $Meta.Manifest.ManifestVersion;
+ switch ($Meta.Manifest.Category) {
+  "AzurePipelines" {
+   $Manifest | Set-Category -AzurePipelines;
+  }
+ }
+ #
+ # Define details (overview.md and LICENSE required for public)
+ #
+ if ((Test-Path -Path "$($script:WorkingDir)\overview.md") -and (Test-Path -Path "$($script:WorkingDir)\LICENSE")) {
+  $Manifest.Content = New-Content -Details 'overview.md' -License 'LICENSE';
+ }
+ #
+ # Add Repository
+ #
+ $Manifest.Repository = New-Repository -Type Git -Url $Meta.Project.GithubUrl
+ #
+ # Create links
+ #
+ $Manifest.Links = New-Link -GetStarted "$($Meta.Project.GithubUrl)/blob/main/README.md" -License "$($Meta.Project.GithubUrl)/blob/main/LICENSE" -Support "$($Meta.Project.GithubUrl)/issues";
+ #
+ # This is the option for Extension Tasks
+ #
+ $Manifest | Add-Contribution -Id $Meta.Manifest.Id -Type "ms.vss-distributed-task.task";
+ #
+ # Create extension file
+ #
+ $Manifest | Out-Manifest | Out-File -FilePath "$($script:WorkingDir)\vss-extension.json" -Force
+ foreach ($t in $Meta.Manifest.Tasks) {
+  #
+  # Create Task Folder
+  #
+  if (Test-Path -Path "$($ProjectDir.FullName)\$($t.Name)") {
+   $TaskFolder = Get-Item -Path "$($ProjectDir.FullName)\$($t.Name)";
+  } else {
+   $TaskFolder = New-Item -Path "$($ProjectDir.FullName)\$($t.Name)" -ItemType Directory;
+  }
+  #
+  # Create Task
+  #
+  if (!(Test-Path "$($TaskFolder.FullName)\task-id.json")) { [System.Guid]::NewGuid() | Select-Object -Property Guid | ConvertTo-Json | Out-File -FilePath "$($TaskFolder.FullName)\task-version.json" }
+  $TaskId = (Get-Content -Path "$($TaskFolder.FullName)\task-id.json" | ConvertFrom-Json).Guid
+  $Task = New-Task -Id $TaskId -Name $t.Name -FriendlyName $t.FriendlyName -Description $t.Description -Author $t.Author -Version $t.Version;
+  $Task.HelpMarkDown = $t.HelpMarkDown,
+  $Task.MinimumAgentVersion = '1.95.0';
+  $Task | Set-Category -Utility;
+  $Task | New-Execution -Execution 'PowerShell3' -Target "$($t.Name).ps1";
+  $Task | Set-Visibility -Build -Release;
+  New-Item -Path "$($TaskFolder.FullName)\$($t.Name).ps1" -Force;
+  #
+  # Update Manifest with files
+  #
+  $Manifest = Get-Manifest -Path "$($script:WorkingDir)\vss-extension.json";
+  $Manifest | Add-File -Path "$($ProjectDir.BaseName)\$($TaskFolder.BaseName)";
+  $Manifest | Out-Manifest | Out-File -FilePath "$($script:WorkingDir)\vss-extension.json" -Force;
+  foreach ($i in $t.Inputs) {
+   #
+   # Create Inputs
+   #
+   $Task | Add-Input -Name $i.Name -Type $i.Type -Label $i.Label -Required:$i.Required -HelpMarkDown $i.HelpMarkDown;
+  }
+  $Task | Out-Task | Out-File "$($TaskFolder.FullName)\task.json" -Force;
+ }
+}
+
+Task AddVstsTaskSdk {
+ $Meta = Get-Content "$($script:WorkingDir)\metadata.json" | ConvertFrom-Json;
+ $TaskFolder = Get-Item "$($Meta.Project.ExtensionName)"
+ Save-Module –Name VstsTaskSdk –Path "$($TaskFolder.FullName)\ps_modules" –Force;
+ Set-Location "$($TaskFolder.FullName)\ps_modules\VstsTaskSdk";
+ $VstsTaskSdkDirectory = (Get-Item .).FullName;
+ $VersionDirectory = (Get-Item .).GetDirectories().FullName;
+ Move-Item "$($VersionDirectory)\*" $VstsTaskSdkDirectory -Verbose
+ Remove-Item $VersionDirectory -Recurse -Force;
+}
 
 Task clean {
  Remove-Item "$($script:WorkingDir)\Output" -Recurse -ErrorAction Ignore;
  New-Item -Name "Output" -ItemType Directory -Force;
 }
 
-Task UpdateVssExtension -Action {
- $vssExtension = Get-Content "$($script:WorkingDir)\vss-extension.json" | ConvertFrom-Json;
- $vssExtension.links.getstarted.uri = "$($script:GithubUrl)/blob/main/README.md";
- $vssExtension.links.getstarted.uri = "$($script:GithubUrl)/blob/main/LICENSE";
- $vssExtension.links.getstarted.uri = "$($script:GithubUrl)/issues";
- $vssExtension.repository.uri = "$($script:GithubUrl)";
- $vssExtension | ConvertTo-Json -Depth 10 | Out-File "$($script:WorkingDir)\vss-extension.json" -Force
-}
-
-Task NewExtensionManifest {
- #
- # Import poshadotask
- #
- $Manifest = New-Manifest -Id $script:TaskName -Version $script:Version -Name $script:FriendlyName -Publisher $script:Publisher -Description $script:Description;
- $Manifest | Set-Category -AzurePipelines;
- $Manifest | Add-File -Path $script:TaskName;
- $Manifest.Content = New-Content -Details 'overview.md' -License 'LICENSE';
- $Manifest.Links = New-Link -GetStarted "$($script:GithubUrl)/blob/main/README.md" -License "$($script:GithubUrl)/blob/main/LICENSE" -Support "$($script:GithubUrl)/issues";
- $Manifest.Repository = New-Repository -Type Git -Url "$($script:GithubUrl)";
- $Manifest | Add-Contribution -Id $script:TaskName -Type "ms.vss-distributed-task.task";
- $Manifest | Out-Manifest | Out-File vss-extension.json -Force
-}
-
-Task NewTask {
- #
- # Import poshadotask
- #
- $Manifest = Get-Manifest (Get-Item .\vss-extension.json).FullName;
- if (!(Test-Path .\task-version.json)) { [System.Guid]::NewGuid() | Select-Object -Property Guid | ConvertTo-Json | Out-File task-version.json }
- if (!(Test-Path $Manifest.Id)) { New-Item -Name $Manifest.Id -ItemType Directory }
- $Task = New-Task -Id (Get-Content .\task-version.json | ConvertFrom-Json).Guid -Name $script:TaskName -FriendlyName $script:FriendlyName -Description $script:Description -Author $script:Author -Version $script:Version;
- $Task.HelpMarkdown = "If you have any issues, please create an issue ($($($script:GithubUrl))/issues)";
- $Task.MinimumAgentVersion = '1.95.0';
- $Task | Set-Category -Utility;
- $Task | New-Execution -Execution 'PowerShell3' -Target "$($script:TaskName).ps1";
- $Task | Set-Visibility -Build -Release;
- $Task | Out-Task | Out-File ".\$($script:TaskName)\task.json" -Force
-}
-
-Task UpdateTask {
- #
- # Import poshadotask
- #
- $Task = Get-Task (Get-Item ".\$($script:TaskName)\task.json")
- $Task | Add-Input -Name "Name" -Type string -Label "Name Value" -Required -HelpMarkDown "Prove a name for this item"
- $Task | Out-Task | Out-File ".\$($script:TaskName)\task.json" -Force
-}
 Task SetupTfx {
  npm install -g tfx-cli
 }
 
-Task SetupTask {
- tfx build tasks create --task-name $script:TaskName --friendly-name $script:TaskName --description $script:Description --author $script:Author
-}
-
-Task AddVstsTaskSdk -depends SetupTask {
- Save-Module –Name VstsTaskSdk –Path ".\$($script:TaskName)\ps_modules" –Force;
- Set-Location ".\$($script:TaskName)\ps_modules\VstsTaskSdk";
- $VstsTaskSdkDirectory = (Get-Item .).FullName;
- $VersionDirectory = (Get-Item .).GetDirectories().FullName;
- Write-Output $VstsTaskSdkDirectory
- Write-Output $VersionDirectory
- Move-Item "$($VersionDirectory)\*" $VstsTaskSdkDirectory -Verbose
- Remove-Item $VersionDirectory -Recurse -Force;
-}
-
 Task CreatePackage -depends Clean {
- tfx extension create --manifest-globs vss-extension.json --output-path "$($script:WorkingDir)\Output"
+ tfx extension create --manifest-globs "$($script:WorkingDir)\vss-extension.json" --output-path "$($script:WorkingDir)\Output" --no-prompt
+}
+
+Task PublishExtension {
+ $Manifest = Get-Manifest -Path "$($script:WorkingDir)\vss-extension.json";
+ $Token = Get-Content "$($script:WorkingDir)\ado.token" | ConvertFrom-Json;
+ $OutputFolder = Get-Item -Path "$($script:WorkingDir)\Output";
+ $VisxFile = Get-ChildItem -Path $OutputFolder |Where-Object -Property BaseName -Contains $Manifest.Version;
+ tfx extension publish --vsix $VisxFile.FullName --token $Token.PAT --json --no-prompt
 }
 
 Task NewTaggedRelease -Description "Create a tagged release" -Action {
+ $Meta = Get-Content "$($script:WorkingDir)\metadata.json" | ConvertFrom-Json;
  $Version = Get-Content "$($script:WorkingDir)\vss-extension.json" | ConvertFrom-Json | Select-Object -ExpandProperty Version
- git tag -a v$version -m "$($script:TaskName) Version $($Version)"
+ git tag -a v$version -m "$($Meta.Project.ExtensionName) Version $($Version)"
  git push origin v$version
 }
 
 Task Post2Discord -Description "Post a message to discord" -Action {
+ $Meta = Get-Content "$($script:WorkingDir)\metadata.json" | ConvertFrom-Json;
  $version = Get-Content "$($script:WorkingDir)\vss-extension.json" | ConvertFrom-Json | Select-Object -ExpandProperty Version
  $Discord = Get-Content .\discord.poshmongo | ConvertFrom-Json
- $Discord.message.content = "Version $($version) of $($script:TaskName) released. Please visit Github ($script:GithubUrl) or the MarketPlace ($script:MarketplaceUrl) to download."
+ $Discord.message.content = "Version $($version) of $($Meta.Project.ExtensionName) released. Please visit Github ($($Meta.Project.GithubUrl)) or the MarketPlace ($($script:MarketplaceUrl)=$($Meta.Manifest.Publisher).$($Meta.Project.ExtensionName)) to download."
  Invoke-RestMethod -Uri $Discord.uri -Body ($Discord.message | ConvertTo-Json -Compress) -Method Post -ContentType 'application/json; charset=UTF-8'
 }
