@@ -149,7 +149,7 @@ Task PublishExtension {
  $Token = Get-Content "$($script:WorkingDir)\ado.token" | ConvertFrom-Json;
  $OutputFolder = Get-Item -Path "$($script:WorkingDir)\Output";
  $VisxFile = Get-ChildItem -Path $OutputFolder | Where-Object -Property BaseName -Contains $Manifest.Version;
- tfx extension publish --vsix $VisxFile.FullName --token $Token.PAT --json --no-prompt
+ tfx extension publish --vsix $VisxFile.FullName --token $Token.PAT --json --no-prompt --output-path "$($script:WorkingDir)\Output"
 }
 
 Task NewTaggedRelease -Description "Create a tagged release" -Action {
