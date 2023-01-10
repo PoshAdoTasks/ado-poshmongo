@@ -1,10 +1,7 @@
 [CmdletBinding()]
 param(
- [Parameter(Mandatory = $true)]
  [string]$DatabaseName,
- [Parameter(Mandatory = $true)]
  [string]$CollectionName,
- [Parameter(Mandatory = $true)]
  [string]$DocumentId
 )
 
@@ -14,8 +11,8 @@ try {
  $ErrorActionPreference = 'Stop';
  $Error.Clear();
 
- $DatabaseName = Get-VstsInput -Name DatabaseName
- $CollectionName = Get-VstsInput -Name CollectionName
+ [string]$DatabaseName = Get-VstsInput -Name DatabaseName
+ [string]$CollectionName = Get-VstsInput -Name CollectionName
  $DocumentId = Get-VstsInput -Name DocumentId
 
  Write-Host "DatabaseName   : $($DatabaseName)"
