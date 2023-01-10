@@ -1,92 +1,92 @@
 {
- "manifestVersion": 1,
- "id": "pattontech-ado-poshmongo",
- "version": "1.5.0",
- "name": "ADO PoshMongo",
- "publisher": "pattontech",
- "categories": [
-  "Azure Pipelines"
- ],
- "targets": [
-  {
-   "id": "Microsoft.VisualStudio.Services"
-  }
- ],
- "description": "An Azure DevOps extension for working with MongoDB",
- "icons": {
-  "default": "icon.png"
- },
- "content": {
-  "details": {
-   "path": "overview.md"
+  "manifestVersion": 1,
+  "id": "pattontech-ado-poshmongo",
+  "version": "1.7.0",
+  "name": "ADO PoshMongo",
+  "publisher": "pattontech",
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "An Azure DevOps extension for working with MongoDB",
+  "icons": {
+    "default": "icon.png"
   },
-  "license": {
-   "path": "LICENSE"
-  }
- },
- "links": {
-  "getstarted": {
-   "uri": "https://github.com/PoshAdoTasks/ado-poshmongo/blob/main/README.md"
+  "content": {
+    "details": {
+      "path": "overview.md"
+    },
+    "license": {
+      "path": "LICENSE"
+    }
   },
-  "license": {
-   "uri": "https://github.com/PoshAdoTasks/ado-poshmongo/blob/main/LICENSE"
+  "links": {
+    "getstarted": {
+      "uri": "https://github.com/PoshAdoTasks/ado-poshmongo/blob/main/README.md"
+    },
+    "license": {
+      "uri": "https://github.com/PoshAdoTasks/ado-poshmongo/blob/main/LICENSE"
+    },
+    "support": {
+      "uri": "https://github.com/PoshAdoTasks/ado-poshmongo/issues"
+    }
   },
-  "support": {
-   "uri": "https://github.com/PoshAdoTasks/ado-poshmongo/issues"
-  }
- },
- "repository": {
-  "type": "git",
-  "uri": "https://github.com/PoshAdoTasks/ado-poshmongo"
- },
- "public": true,
- "files": [
-  {
-   "path": "adoposhmongo/ConnectMongoDb"
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/PoshAdoTasks/ado-poshmongo"
   },
-  {
-   "path": "adoposhmongo/GetMongoDBDocument"
-  },
-  {
-   "path": "adoposhmongo/AddMongoDBDocument"
-  }
- ],
- "contributions": [
-  {
-   "id": "pattontech-ado-poshmongo-connectmongodb",
-   "type": "ms.vss-distributed-task.task",
-   "description": "",
-   "targets": [
-    "ms.vss-distributed-task.tasks"
-   ],
-   "restrictedTo": [],
-   "properties": {
-    "name": "adoposhmongo/ConnectMongoDb"
-   }
-  },
-  {
-   "id": "pattontech-ado-poshmongo-getmongodbdocument",
-   "type": "ms.vss-distributed-task.task",
-   "description": "",
-   "targets": [
-    "ms.vss-distributed-task.tasks"
-   ],
-   "restrictedTo": [],
-   "properties": {
-    "name": "adoposhmongo/GetMongoDBDocument"
-   }
-  },
-  {
-   "id": "pattontech-ado-poshmongo-addmongodbdocument",
-   "type": "ms.vss-distributed-task.task",
-   "description": "",
-   "targets": [
-    "ms.vss-distributed-task.tasks"
-   ],
-   "restrictedTo": [],
-   "properties": {
-    "name": "adoposhmongo/AddMongoDBDocument"
-   }
-  }
- ]
+  "public": true,
+  "files": [
+    {
+      "path": "adoposhmongo/ConnectMongoDb"
+    },
+    {
+      "path": "adoposhmongo/GetMongoDBDocument"
+    },
+    {
+      "path": "adoposhmongo/AddMongoDBDocument"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "pattontech-ado-poshmongo-connectmongodb",
+      "type": "ms.vss-distributed-task.task",
+      "description": "",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "restrictedTo": [],
+      "properties": {
+        "name": "adoposhmongo/ConnectMongoDb"
+      }
+    },
+    {
+      "id": "pattontech-ado-poshmongo-getmongodbdocument",
+      "type": "ms.vss-distributed-task.task",
+      "description": "",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "restrictedTo": [],
+      "properties": {
+        "name": "adoposhmongo/GetMongoDBDocument"
+      }
+    },
+    {
+      "id": "pattontech-ado-poshmongo-addmongodbdocument",
+      "type": "ms.vss-distributed-task.task",
+      "description": "",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "restrictedTo": [],
+      "properties": {
+        "name": "adoposhmongo/AddMongoDBDocument"
+      }
+    }
+  ]
 }
