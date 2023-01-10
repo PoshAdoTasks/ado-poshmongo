@@ -11,13 +11,15 @@ try {
  $ErrorActionPreference = 'Stop';
  $Error.Clear();
 
- [string]$DatabaseName = Get-VstsInput -Name DatabaseName
- [string]$CollectionName = Get-VstsInput -Name CollectionName
+ $DatabaseName = Get-VstsInput -Name DatabaseName
+ $CollectionName = Get-VstsInput -Name CollectionName
  $DocumentId = Get-VstsInput -Name DocumentId
 
  Write-Host "DatabaseName   : $($DatabaseName)"
  Write-Host "CollectionName : $($CollectionName)"
  Write-Host "DocumentId     : $($DocumentId)"
+
+ Import-Module PoshMongo
 
  $jsonDocument = Get-MongoDBDocument -DatabaseName $DatabaseName -CollectionName $CollectionName -DocumentId $DocumentId -Verbose:$VerbosePreference;
 
