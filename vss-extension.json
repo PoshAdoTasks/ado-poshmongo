@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "id": "adoposhmongo",
+  "id": "pattontech-ado-poshmongo",
   "version": "1.0.0",
   "name": "ADO PoshMongo",
   "publisher": "pattontech",
@@ -33,18 +33,27 @@
     }
   },
   "repository": {
-    "type": "Git",
+    "type": "git",
     "uri": "https://github.com/PoshAdoTasks/ado-poshmongo"
   },
   "public": false,
   "files": [
     {
-      "path": "adoposhmongo"
+      "path": "adoposhmongo\\ConnectMongoDb"
+    },
+    {
+      "path": "adoposhmongo\\GetMongoDBDocument"
+    },
+    {
+      "path": "adoposhmongo\\AddMongoDBDocument"
+    },
+    {
+      "path": "adoposhmongo\\ps_modules"
     }
   ],
   "contributions": [
     {
-      "id": "adoposhmongo",
+      "id": "pattontech-ado-poshmongo",
       "type": "ms.vss-distributed-task.task",
       "description": "",
       "targets": [
@@ -52,7 +61,7 @@
       ],
       "restrictedTo": [],
       "properties": {
-        "name": "adoposhmongo"
+        "name": "pattontech-ado-poshmongo"
       }
     }
   ]
