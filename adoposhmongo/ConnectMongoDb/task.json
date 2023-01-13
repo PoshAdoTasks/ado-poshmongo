@@ -14,7 +14,7 @@
   "minimumAgentVersion": "",
   "version": {
     "Major": 1,
-    "Minor": 9,
+    "Minor": 10,
     "Patch": 0
   },
   "instanceNameFormat": "ConnectMongoDb $(message)",
@@ -36,7 +36,7 @@
   ],
   "execution": {
     "PowerShell3": {
-      "target": "ConnectMongoDb.ps1"
+      "target": "launch.ps1"
     }
   }
 }

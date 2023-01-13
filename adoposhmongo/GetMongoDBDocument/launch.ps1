@@ -1,0 +1,1 @@
+& pwsh ./GetMongoDBDOcument.ps1

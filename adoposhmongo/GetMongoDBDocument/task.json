@@ -14,7 +14,7 @@
   "minimumAgentVersion": "",
   "version": {
     "Major": 1,
-    "Minor": 9,
+    "Minor": 10,
     "Patch": 0
   },
   "instanceNameFormat": "GetMongoDBDocument $(message)",
@@ -43,7 +43,7 @@
   ],
   "execution": {
     "PowerShell3": {
-      "target": "GetMongoDBDocument.ps1"
+      "target": "launch.ps1"
     }
   }
 }
