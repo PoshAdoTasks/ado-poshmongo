@@ -6,14 +6,12 @@ param(
 )
 
 try {
- Trace-VstsEnteringInvocation $MyInvocation;
-
  $ErrorActionPreference = 'Stop';
  $Error.Clear();
 
- $DatabaseName = Get-VstsInput -Name DatabaseName
- $CollectionName = Get-VstsInput -Name CollectionName
- $DocumentId = Get-VstsInput -Name DocumentId
+ Import-Module .\ps_modules\VstsTaskSdk\VstsTaskSdk.psd1-Verbose:$VerbosePreference;
+
+ Trace-VstsEnteringInvocation $MyInvocation;
 
  Write-Host "DatabaseName   : $($DatabaseName)"
  Write-Host "CollectionName : $($CollectionName)"
