@@ -8,16 +8,26 @@ try {
  $ErrorActionPreference = 'Stop';
  $Error.Clear();
 
- Import-Module .\ps_modules\VstsTaskSdk\VstsTaskSdk.psd1-Verbose:$VerbosePreference;
+ Import-Module .\ps_modules\VstsTaskSdk\VstsTaskSdk.psd1 -Verbose:$VerbosePreference;
+
+ $NewConnection = [System.Uri]::new($ConnectionString);
 
  Trace-VstsEnteringInvocation $MyInvocation;
 
- Write-Host "ConnectionString : $($ConnectionString)"
+ Write-Host "ConnectionString : $($NewConnection.Scheme)"
  Write-Host "ForceTls12       : $($ForceTls12)"
 
  Import-Module PoshMongo
 
- Connect-MongoDBInstance -ConnectionString $ConnectionString -ForceTls12 $ForceTls12 -Verbose:$VerbosePreference;
+ if ($ForceTls12.ToLower() -eq 'true')
+ {
+  $Client = Connect-MongoDBInstance -ConnectionString $NewConnection.AbsoluteUri -ForceTls12 -Verbose:$VerbosePreference;
+ } else
+ {
+  $Client = Connect-MongoDBInstance -ConnectionString $NewConnection.AbsoluteUri -Verbose:$VerbosePreference;
+ }
+ $Client
+ Write-Host "##vso[task.setvariable variable=Client;]$($Client)"
 }
 catch {
  throw $_;
