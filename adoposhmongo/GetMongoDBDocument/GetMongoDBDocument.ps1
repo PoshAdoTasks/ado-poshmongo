@@ -9,7 +9,7 @@ try {
  $ErrorActionPreference = 'Stop';
  $Error.Clear();
 
- Import-Module .\ps_modules\VstsTaskSdk\VstsTaskSdk.psd1-Verbose:$VerbosePreference;
+ Import-Module .\ps_modules\VstsTaskSdk\VstsTaskSdk.psd1 -Verbose:$VerbosePreference;
 
  Trace-VstsEnteringInvocation $MyInvocation;
 
