@@ -14,7 +14,7 @@
   "minimumAgentVersion": "",
   "version": {
     "Major": 1,
-    "Minor": 10,
+    "Minor": 17,
     "Patch": 0
   },
   "instanceNameFormat": "GetMongoDBDocument $(message)",
