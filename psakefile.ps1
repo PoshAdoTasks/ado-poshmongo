@@ -1,16 +1,11 @@
 $script:WorkingDir = $PSScriptRoot;
 $script:MarketplaceUrl = "https://marketplace.visualstudio.com/items?itemName"
 
-if (Get-Module -ListAvailable | Where-Object -Property Name -eq 'PoshAdoTask') {
- if (!(Get-Module PoshAdoTask)) {
-  Import-Module PoshAdoTask -Force;
- }
-}
-else {
- Install-Module PoshAdoTask -Scope CurrentUser -AllowClobber -Force
- Import-Module PoshAdoTask -Force;
-}
-
+#
+# Need to update PoshAdoTask module
+#
+# Import-Module PoshAdoTask -Scope:Global -Verbose
+import-module D:\CODE\Organizations\PoshAdoTasks\PoshAdoTask\PoshAdoTask\bin\Debug\net6.0\PoshAdoTask.dll
 Import-Module BuildHelpers;
 Import-Module psake;
 
