@@ -3,8 +3,8 @@
   "name": "AddMongoDBDocument",
   "friendlyName": "Add MongoDB Document",
   "description": "Add a Document to MongoDB",
-  "helpUrl": "",
-  "helpMarkDown": "1.95.0 ",
+  "helpUrl": "If you have any issues, please create an issue (https://github.com/PoshAdoTasks/ado-poshmongo/issues)",
+  "helpMarkDown": "Add a document to a MonogDB Database",
   "author": "Jeffrey S. Patton",
   "visibility": [
     "Build",
@@ -14,7 +14,7 @@
   "minimumAgentVersion": "",
   "version": {
     "Major": 1,
-    "Minor": 17,
+    "Minor": 33,
     "Patch": 0
   },
   "instanceNameFormat": "AddMongoDBDocument $(message)",

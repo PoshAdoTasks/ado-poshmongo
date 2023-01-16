@@ -3,8 +3,8 @@
   "name": "ConnectMongoDb",
   "friendlyName": "Connect MongoDB",
   "description": "Connect to MongoDB Instance",
-  "helpUrl": "",
-  "helpMarkDown": "1.95.0 ",
+  "helpUrl": "If you have any issues, please create an issue (https://github.com/PoshAdoTasks/ado-poshmongo/issues)",
+  "helpMarkDown": "Connect to a MongoDB Instance",
   "author": "Jeffrey S. Patton",
   "visibility": [
     "Build",
@@ -14,7 +14,7 @@
   "minimumAgentVersion": "",
   "version": {
     "Major": 1,
-    "Minor": 17,
+    "Minor": 33,
     "Patch": 0
   },
   "instanceNameFormat": "ConnectMongoDb $(message)",
@@ -38,5 +38,11 @@
     "PowerShell3": {
       "target": "launch.ps1"
     }
-  }
+  },
+  "outputVariables": [
+    {
+      "name": "Client",
+      "description": "MongoDB Client Output"
+    }
+  ]
 }

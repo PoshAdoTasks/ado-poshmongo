@@ -3,8 +3,8 @@
   "name": "GetMongoDBDocument",
   "friendlyName": "Get MongoDB Document",
   "description": "Get a Document from MongoDB",
-  "helpUrl": "",
-  "helpMarkDown": "1.95.0 ",
+  "helpUrl": "If you have any issues, please create an issue (https://github.com/PoshAdoTasks/ado-poshmongo/issues)",
+  "helpMarkDown": "Get a document from MongoDB",
   "author": "Jeffrey S. Patton",
   "visibility": [
     "Build",
@@ -14,7 +14,7 @@
   "minimumAgentVersion": "",
   "version": {
     "Major": 1,
-    "Minor": 17,
+    "Minor": 33,
     "Patch": 0
   },
   "instanceNameFormat": "GetMongoDBDocument $(message)",
