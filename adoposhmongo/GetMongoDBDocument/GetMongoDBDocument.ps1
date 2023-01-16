@@ -13,6 +13,13 @@ try {
 
  Trace-VstsEnteringInvocation $MyInvocation;
 
+ Write-Host "Checking for Global:Client";
+ Write-Output $Global:Client
+ Write-Host "Trying to get the variable from ConnectMonogDB"
+ $Client = Write-Host "##vso[task.getvariable variable=Client;]"
+ Write-Output $Client
+ Write-Host "Done."
+
  Write-Host "DatabaseName   : $($DatabaseName)"
  Write-Host "CollectionName : $($CollectionName)"
  Write-Host "DocumentId     : $($DocumentId)"
