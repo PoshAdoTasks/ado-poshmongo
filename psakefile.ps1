@@ -11,7 +11,13 @@ else {
  Import-Module PoshAdoTask -Force;
 }
 
+Import-Module BuildHelpers;
+Import-Module psake;
+
 Task SetupProject -depends Clean, CreateProject, AddVstsTaskSdk, SetupTfx
+
+Task Build -depends Clean, CreatePackage
+Task Deploy -depends PublishExtension
 
 Task CreateProject {
  #
